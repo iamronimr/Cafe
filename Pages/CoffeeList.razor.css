@@ -1,0 +1,60 @@
+﻿body {
+    background-color: #dce3f0;
+}
+
+.height {
+    height: 100vh;
+    gap: 20px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.card {
+    width: 350px;
+    height: 370px;
+    
+}
+
+.image {
+    position: absolute;
+    right: 12px;
+    top: 10px;
+    border-radius: 20px;
+}
+    .image img {
+        border-radius: 20px;
+    }
+
+.main-heading {
+    font-size: 40px;
+    color: red !important;
+}
+
+
+.user-ratings h6 {
+    margin-top: 2px;
+}
+
+.colors {
+    display: flex;
+    margin-top: 2px;
+}
+
+    .colors span {
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        margin-right: 6px;
+    }
+
+        .colors span:nth-child(1) {
+            background-color: red;
+        }
+
+
+.btn-danger {
+    height: 48px;
+    font-size: 18px;
+}

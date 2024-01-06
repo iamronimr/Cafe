@@ -1,0 +1,56 @@
+﻿@page "/AddIns"
+<h3>View Add Ins</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through each hobby data -->
+        @foreach (var addInsData in AddInsServices.RetrieveAddInsData())
+        {
+            <tr>
+                <!-- Display add ins ID, Name and Price -->
+                <td>@addInsData.Id</td>
+                <td>@addInsData.Name</td>
+                <td>@addInsData.Price</td>
+                <td>
+                    <!-- Button to navigate to the edit add ins page with the specific hobby ID -->
+                    <button type="submit" @onclick="@(()=>EditAddIns(addInsData.Id))" class="btn btn-primary">Edit</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    // Inject NavigationManager for navigation purposes
+    [Inject]
+    private NavigationManager NManager { get; set; }
+
+    // Initialize the page on start
+    protected override void OnInitialized()
+    {
+        // Inject sample hobby data to ensure some data exists
+        AddInsServices.InjectSampleAddInsData();
+        base.OnInitialized();
+    }
+
+    // Method to navigate to the EditHobby page with a specific hobby Id
+    public void EditAddIns(Guid id)
+    {
+        try
+        {
+            // Navigate to the EditHobby page with the specific hobby ID
+            NManager.NavigateTo($"/EditAddIns/{id}");
+        }
+        catch (Exception ex)
+        {
+            // Handle any navigation errors
+            Console.WriteLine($"Error Navigating:{ex.Message}");
+        }
+    }
+}

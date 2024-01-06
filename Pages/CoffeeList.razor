@@ -1,0 +1,90 @@
+﻿@page "/coffee-list"
+@using System.Collections.Generic
+
+<h2>Available Coffee</h2>
+<div class="height d-flex justify-content-center align-items-center">
+
+    @foreach (var item in items)
+    {
+        <div class="card p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div class="mt-2">
+                    <h4 class="text-uppercase">@item.Brand</h4>
+                    <div class="mt-5">
+                        <h5 class="text-uppercase mb-0">@item.ProductName</h5>
+                        <h1 class="main-heading mt-0">@item.ProductType</h1>
+                    </div>
+                </div>
+                <div class="image">
+                    <img src="@item.ImageUrl" width="150" height="150">
+                </div>
+            </div>
+            <div class="quantity-controls mt-3">
+                <div class="input-group">
+                    <span class="input-group-text mb-1">Price: Rs.@item.Price</span>
+                    <div class="quantity-buttons d-flex align-items-center">
+                        <button class="btn btn-outline-secondary" type="button" @onclick="() => DecreaseQuantity(item)">-</button>
+                        <input type="text" class="form-control" id="quantity" @bind="item.Quantity">
+                        <button class="btn btn-outline-secondary" type="button" @onclick="() => IncreaseQuantity(item)">+</button>
+                    </div>
+                    <div class="total-price d-flex">
+                        <span class="input-group-text mt-1 mb-1">Total Price: Rs.@CalculateTotalPrice(item)</span>
+                        <div class="dropdown ms-2 mt-1">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="addInsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                                Add Ins
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="addInsDropdown">
+                                <li><a class="dropdown-item" href="#">Sugar</a></li>
+                                <li><a class="dropdown-item" href="#">Milk</a></li>
+                                <!-- Add more items as needed -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-danger">Order</button>
+        </div>
+    }
+
+</div>
+
+@code{
+
+	private List<CoffeeItem> items = new List<CoffeeItem>
+	{
+        new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th?id=OIP.xZ4VQKpf4Tb6fMaCG7ettQHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", Price = 100, Quantity = 1 },
+        new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th?id=OIP.xZ4VQKpf4Tb6fMaCG7ettQHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", Price = 100, Quantity = 1 },
+        new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th/id/OIP.tOveJnmc__DGzRYxzQ8stwHaIQ?w=168&h=188&c=7&r=0&o=5&dpr=1.1&pid=1.7", Price = 500, Quantity = 1 },
+        new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th/id/OIP.ByBwvq2IWsoSMOAQWAV8tAHaEo?w=262&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7", Price = 300, Quantity = 1 },
+        new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th/id/OIP.ByBwvq2IWsoSMOAQWAV8tAHaEo?w=262&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7", Price = 300, Quantity = 1 },
+		new CoffeeItem { Brand = "Himalayan", ProductName = "Blanda Matt", ProductType = "VASE", ImageUrl = "https://th.bing.com/th/id/OIP.PGflPWglidy4zgLdOsHiDAHaEo?w=272&h=180&c=7&r=0&o=5&dpr=1.1&pid=1.7", Price = 200, Quantity = 1}
+    };
+
+
+	private void IncreaseQuantity(CoffeeItem item)
+	{
+		item.Quantity++;
+	}
+
+	private void DecreaseQuantity(CoffeeItem item)
+	{
+		if (item.Quantity > 1)
+		{
+			item.Quantity--;
+		}
+	}
+	private decimal CalculateTotalPrice(CoffeeItem item)
+	{
+		return item.Price * item.Quantity;
+	}
+    public class CoffeeItem
+    {
+        public string Brand { get; set; }
+        public string ProductName { get; set; }
+        public string ProductType { get; set; }
+        public string ImageUrl { get; set; }
+        public decimal Price { get; set; }
+        public int Quantity { get; set; }
+        public string Description { get; set; }
+    }
+}
