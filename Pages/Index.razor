@@ -178,28 +178,27 @@
         {
             case "admin":
                 userType = UserType.Admin;
-                AuthService.SetUserLoggedIn(true);
+                AuthService.SetUserLoggedIn(true, userType);
                 break;
             case "staff":
                 userType = UserType.Staff;
-                AuthService.SetUserLoggedIn(true);
+                AuthService.SetUserLoggedIn(true,userType);
                 break;
             default:
-                userType = UserType.Staff;
-                AuthService.SetUserLoggedIn(true);
+                userType = UserType.Others;
+                AuthService.SetUserLoggedIn(false,userType);
+                App.Current.MainPage.DisplayAlert("Error", $"Login Failed", "Ok");
+                NavManager.NavigateTo("/");
                 break;
         }
 
         switch (userType)
         {
             case UserType.Admin:
-                NavManager.NavigateTo("/dashboard");
+                NavManager.NavigateTo("/coffee-list");
                 break;
             case UserType.Staff:
                 NavManager.NavigateTo("/coffee-list");
-                break;
-            default:
-                NavManager.NavigateTo("/orders");
                 break;
         }
 

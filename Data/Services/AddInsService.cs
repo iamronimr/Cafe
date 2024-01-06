@@ -37,10 +37,10 @@ namespace Cafe.Data.Services
                 List<AddIns> sampleAddIns = new List<AddIns>
             {
                 new AddIns { Name = "Sugar" , Price = "100" },
-                new AddIns { Name = "Lemon", Price= "150" },
-                new AddIns { Name = "Milk" , Price= "210" },
-                new AddIns { Name = "Coding" , Price= "110"},
-                new AddIns { Name = "Dancing", Price= "120"},
+                new AddIns { Name = "Lemon", Price= "200" },
+                new AddIns { Name = "Milk" , Price= "300" },
+                new AddIns { Name = "Coding" , Price= "400"},
+                new AddIns { Name = "Dancing", Price= "500"},
   
             };
                 SaveAddInsToJson(sampleAddIns); // Save the sample add ins data to the JSON file by calling SaveHobbiesToJson Method and passing sampleHobbies as it Argument.

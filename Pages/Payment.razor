@@ -1,0 +1,42 @@
+﻿<!-- Razor page for editing a hobby with a specified Id -->
+@page "/Payment/{Id:guid}"
+<!-- Inject the NavigationManager Service for page navigation -->
+@inject NavigationManager NavManager
+
+<h3>Make Payment</h3>
+<EditForm Model="@payment" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <div class="form-group">
+        <label for="FullName">FullName:</label>
+        <!-- InputText component with two-way data binding to the FirstName property -->
+        <InputText id="FirstName" class="form-control" @bind-Value="payment.CustomerName" />
+    </div>
+    <div class="form-group">
+        <label for="Contact">Contact:</label>
+        <!-- InputText component with two-way data binding to the LastName property -->
+        <InputText id="LastName" class="form-control" @bind-Value="payment.Contact" />
+    </div>
+    <br />
+    <!-- Submit button for form submission -->
+    <button type="submit" class="btn btn-primary">Submit</button>
+</EditForm>
+
+@code {
+    [Parameter] // Parameter to capture the hobby Id from the route above /EditHobby/{Id:guid}
+    public Guid Id { get; set; }
+
+    Payments payment = new Payments();
+    // HandleSubmit method is called on form submission
+    public void HandleSubmit()
+    {
+        payment.OrderId = Id;
+
+
+        // Save the order details using the OrderService (replace with your actual service)
+        PaymentService.SaveFormDataInJson(payment);
+
+        // Display a success alert or perform other actions as needed
+        App.Current.MainPage.DisplayAlert("Success", "Payment Saved Successfully", "Ok");
+    }
+}

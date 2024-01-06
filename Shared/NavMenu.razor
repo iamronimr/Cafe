@@ -1,4 +1,6 @@
-﻿<div class="navtitle">
+﻿@inject AuthenticationService AuthService
+
+<div class="navtitle">
     <div class="container-fluid">
         <a class="navbar-brand" href="">CourseWork</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -15,15 +17,24 @@
             </NavLink>
         </div>
         <div class="nav-item">
-            <NavLink class="nav-link text-danger" href="counter">
+            <NavLink class="nav-link text-danger" href="OrderedItems">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Ordered
             </NavLink>
         </div>
         <div class="nav-item">
-            <NavLink class="nav-link text-danger" href="AddIns">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Add Ins
+            <NavLink class="nav-link text-danger" href="Payments">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Payments
             </NavLink>
         </div>
+        @if(AuthService.UserType == UserType.Admin)
+        {
+            <div class="nav-item">
+                <NavLink class="nav-link text-danger" href="AddIns">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Add Ins
+                </NavLink>
+            </div>
+        }
+        
     </nav>
 </div>
 

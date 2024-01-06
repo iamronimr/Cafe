@@ -9,7 +9,8 @@ namespace Cafe.Data.Utils
     public enum UserType
     {
         Admin,
-        Staff
+        Staff,
+        Others
     }
 
 }

@@ -4,7 +4,7 @@
 <h2>Available Coffee</h2>
 <div class="height d-flex justify-content-center align-items-center">
 
-    @foreach (var item in items)
+    @foreach (var (item, index) in items.Select((item, index) => (item, index)))
     {
         <div class="card p-3">
             <div class="d-flex justify-content-between align-items-center">
@@ -27,28 +27,45 @@
                         <input type="text" class="form-control" id="quantity" @bind="item.Quantity">
                         <button class="btn btn-outline-secondary" type="button" @onclick="() => IncreaseQuantity(item)">+</button>
                     </div>
-                    <div class="total-price d-flex">
-                        <span class="input-group-text mt-1 mb-1">Total Price: Rs.@CalculateTotalPrice(item)</span>
-                        <div class="dropdown ms-2 mt-1">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="addInsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                                Add Ins
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="addInsDropdown">
-                                <li><a class="dropdown-item" href="#">Sugar</a></li>
-                                <li><a class="dropdown-item" href="#">Milk</a></li>
-                                <!-- Add more items as needed -->
-                            </ul>
+                    <div class="double  d-flex">
+                        <div class="total-price">
+                            <span class="input-group-text mt-1 mb-1">Total Price: Rs.@CalculateTotalPrice(item)</span>
+                           
+                        </div>
+                        <div>
+                            <select id="@($"AddIns_{index}")" class="form-control ms-2" multiple style="height: 30px; width: 150px; overflow-y: auto;">
+                                <!-- Iterate through the list of add-ins and create an option for each -->
+                                @foreach (var addIns in addInsList)
+                                {
+                                    <option value="@addIns.Id">@addIns.Name</option>
+                                }
+                            </select>
                         </div>
                     </div>
+                    
                 </div>
             </div>
-            <button class="btn btn-danger" @onclick:preventDefault="true" @onclick="@(e => HandleOrder(item))">Order</button>
+            <button class="btn btn-danger" @onclick:preventDefault="true" @onclick="@(e => HandleOrder(item,index))">Order</button>
         </div>
     }
 
 </div>
 
 @code{
+    public List<AddIns> addInsList = new List<AddIns>();
+
+    AddIns addins = new AddIns();
+
+    // List to store selected hobby Ids
+    private List<Guid> selectedAddIns = new List<Guid>();
+
+    // Initialization method runs when the component i.e. Form.razor is initialized
+    protected override void OnInitialized()
+    {
+        // Retrieve the list of available hobbies
+        addInsList = AddInsServices.RetrieveAddInsData();
+        base.OnInitialized();
+    }
 
     private List<CoffeeItem> items = new List<CoffeeItem>
 	{
@@ -90,13 +107,33 @@
 
 
 
-    public void HandleOrder(CoffeeItem item)
+    public async void HandleOrder(CoffeeItem item, int index)
     {
+        // Create a list to store selected add-ins
+        var selectedAddIns = new List<AddIns>();
+
+        // Get the selected add-ins Ids directly from the multiselect JavaScript function
+        var selectedAddInsIds = await JSRuntime.InvokeAsync<string[]>("multiselect.getSelectedValues", $"AddIns_{index}");
+
+        // Iterate through the selected add-ins Ids and find the corresponding AddIns objects
+        foreach (var addInId in selectedAddInsIds)
+        {
+            var addIn = addInsList.FirstOrDefault(a => a.Id == Guid.Parse(addInId));
+            if (addIn != null)
+            {
+                selectedAddIns.Add(addIn);
+            }
+        }
+
+        // Calculate the total price, including the prices of selected add-ins
+        decimal totalPrice = CalculateTotalPrice(item) + selectedAddIns.Sum(addIn => decimal.Parse(addIn.Price));
+
         // Create an order and set its properties
         Order order = new Order
             {
-                OrderName = $"{item.Brand} - {item.ProductName}", 
-                TotalPrice = CalculateTotalPrice(item)
+                OrderName = $"{item.Brand} - {item.ProductName}",
+                TotalPrice = totalPrice,
+                AddIns = selectedAddIns
             };
 
         // Save the order details using the OrderService (replace with your actual service)
@@ -105,6 +142,7 @@
         // Display a success alert or perform other actions as needed
         App.Current.MainPage.DisplayAlert("Success", "Order Placed Successfully", "Ok");
     }
+
 
 
 }

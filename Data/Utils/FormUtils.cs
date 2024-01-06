@@ -21,7 +21,30 @@ namespace Cafe.Data.Utils
         public static string ApplicationFilePath()
         {
             string directoryPathCreated = ApplicationDirectoryPath();   // Calling the method ApplicationDirectoryPath That returns the folder created, and storing it in directoryPathCreated variable
-            string filePath = Path.Combine(directoryPathCreated, "FormData.json");  // Combine the directory path with the file name to get the complete file path.
+            string filePath = Path.Combine(directoryPathCreated, "Order.json");  // Combine the directory path with the file name to get the complete file path.
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();  // If the file doesn't exist, create it.
+                    return filePath;    // Return the path of the file.
+                }
+                else
+                {
+                    return filePath;  // Return the path of the file.
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return message;
+            }
+        }
+
+        public static string PaymentFilePath()
+        {
+            string directoryPathCreated = ApplicationDirectoryPath();   // Calling the method ApplicationDirectoryPath That returns the folder created, and storing it in directoryPathCreated variable
+            string filePath = Path.Combine(directoryPathCreated, "Payment.json");  // Combine the directory path with the file name to get the complete file path.
             try
             {
                 if (!File.Exists(filePath))

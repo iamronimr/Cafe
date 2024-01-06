@@ -1,0 +1,77 @@
+﻿@page "/Payments"
+<h3>View Payment Details</h3>
+<button class="btn btn-danger" @onclick="DownloadPdf">Download</button>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Payment Id</th>
+            <th>Order Id</th>
+            <th>Customer Name</th>
+            <th>Contact</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through each hobby data -->
+        @foreach (var paymentData in PaymentService.RetrieveFormData())
+        {
+            <tr>
+                <!-- Display add ins ID, Name and Price -->
+                <td>@paymentData.Id</td>
+                <td>@paymentData.OrderId</td>
+                <td>@paymentData.CustomerName</td>
+                <td>@paymentData.Contact</td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    // Download PDF function
+    public void DownloadPdf()
+    {
+        try
+        {
+            var paymentData = PaymentService.RetrieveFormData();
+
+            if (paymentData != null && paymentData.Any())
+            {
+                // Create a PDF document
+                var pdf = new ChromePdfRenderer();
+
+                // HTML table for PDF
+                var tableHtml = "<table><thead><tr><th>First Name</th><th>Phone Number</th></tr></thead><tbody>";
+
+                // Add data to the table
+                // Loop through form data to add to the PDF table
+                foreach (var data in paymentData)
+                {
+                    tableHtml += "<tr>";
+                    tableHtml += $"<td>{data.CustomerName}</td><td>{data.Contact}</td>";
+                    tableHtml += "<td>";
+                    tableHtml += "</td></tr>";
+                }
+
+                tableHtml += "</tbody></table>";
+
+                //Convert HTML to Pdf
+                var pdfStream = pdf.RenderHtmlAsPdf(tableHtml).Stream;
+
+                // Save the PDF Inside the folder
+                string pdfPath = @"D:\Coursework\Payment";
+
+                //Combining file FormData.pdf with directory and also creating the pdf file at the same time using FileMode inbuilt class of .net and its method and finally storing it in variable fileStream
+                using (var fileStream = new System.IO.FileStream(Path.Combine(pdfPath, "Payment.pdf"), System.IO.FileMode.Create))
+                {
+                    pdfStream.CopyToAsync(fileStream); //copying the data of pdf inside application to the pdf created in you device
+                }
+
+                // Show notification
+                App.Current.MainPage.DisplayAlert("Success", "File Downloaded Successfully", "Ok");
+            }
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
+}
+

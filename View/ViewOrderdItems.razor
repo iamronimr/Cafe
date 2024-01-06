@@ -1,0 +1,56 @@
+﻿@page "/OrderedItems"
+<h3>View Ordered Items</h3>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Order Id</th>
+            <th>Order Name</th>
+            <th>Price</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Loop through each hobby data -->
+        @foreach (var orderedData in OrderService.RetrieveFormData())
+        {
+            <tr>
+                <!-- Display add ins ID, Name and Price -->
+                <td>@orderedData.Id</td>
+                <td>@orderedData.OrderName</td>
+                <td>@orderedData.TotalPrice</td>
+                <td>
+                    <!-- Button to navigate to the edit add ins page with the specific hobby ID -->
+                    <button type="submit" @onclick="@(()=>MakePayment(orderedData.Id))" class="btn btn-primary">Pay</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@code {
+    // Inject NavigationManager for navigation purposes
+    [Inject]
+    private NavigationManager NManager { get; set; }
+
+    // Initialize the page on start
+    protected override void OnInitialized()
+    {
+        // Inject sample hobby data to ensure some data exists
+        AddInsServices.InjectSampleAddInsData();
+        base.OnInitialized();
+    }
+
+    // Method to navigate to the Make Payment page with a specific hobby Id
+    public void MakePayment(Guid id)
+    {
+        try
+        {
+            // Navigate to the EditHobby page with the specific hobby ID
+            NManager.NavigateTo($"/Payment/{id}");
+        }
+        catch (Exception ex)
+        {
+            // Handle any navigation errors
+            Console.WriteLine($"Error Navigating:{ex.Message}");
+        }
+    }
+}
