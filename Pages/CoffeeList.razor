@@ -42,7 +42,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-danger">Order</button>
+            <button class="btn btn-danger" @onclick:preventDefault="true" @onclick="@(e => HandleOrder(item))">Order</button>
         </div>
     }
 
@@ -50,7 +50,7 @@
 
 @code{
 
-	private List<CoffeeItem> items = new List<CoffeeItem>
+    private List<CoffeeItem> items = new List<CoffeeItem>
 	{
         new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th?id=OIP.xZ4VQKpf4Tb6fMaCG7ettQHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", Price = 100, Quantity = 1 },
         new CoffeeItem { Brand = "Everest", ProductName = "Coffee Beans", ProductType = "Beans", ImageUrl = "https://th.bing.com/th?id=OIP.xZ4VQKpf4Tb6fMaCG7ettQHaHa&w=250&h=250&c=8&rs=1&qlt=90&o=6&dpr=1.1&pid=3.1&rm=2", Price = 100, Quantity = 1 },
@@ -61,22 +61,22 @@
     };
 
 
-	private void IncreaseQuantity(CoffeeItem item)
-	{
-		item.Quantity++;
-	}
+    private void IncreaseQuantity(CoffeeItem item)
+    {
+        item.Quantity++;
+    }
 
-	private void DecreaseQuantity(CoffeeItem item)
-	{
-		if (item.Quantity > 1)
-		{
-			item.Quantity--;
-		}
-	}
-	private decimal CalculateTotalPrice(CoffeeItem item)
-	{
-		return item.Price * item.Quantity;
-	}
+    private void DecreaseQuantity(CoffeeItem item)
+    {
+        if (item.Quantity > 1)
+        {
+            item.Quantity--;
+        }
+    }
+    private decimal CalculateTotalPrice(CoffeeItem item)
+    {
+        return item.Price * item.Quantity;
+    }
     public class CoffeeItem
     {
         public string Brand { get; set; }
@@ -87,4 +87,24 @@
         public int Quantity { get; set; }
         public string Description { get; set; }
     }
+
+
+
+    public void HandleOrder(CoffeeItem item)
+    {
+        // Create an order and set its properties
+        Order order = new Order
+            {
+                OrderName = $"{item.Brand} - {item.ProductName}", 
+                TotalPrice = CalculateTotalPrice(item)
+            };
+
+        // Save the order details using the OrderService (replace with your actual service)
+        OrderService.SaveFormDataInJson(order);
+
+        // Display a success alert or perform other actions as needed
+        App.Current.MainPage.DisplayAlert("Success", "Order Placed Successfully", "Ok");
+    }
+
+
 }
