@@ -56,13 +56,13 @@
 
     AddIns addins = new AddIns();
 
-    // List to store selected hobby Ids
+    // List to store selected add ins Ids
     private List<Guid> selectedAddIns = new List<Guid>();
 
     // Initialization method runs when the component i.e. Form.razor is initialized
     protected override void OnInitialized()
     {
-        // Retrieve the list of available hobbies
+        // Retrieve the list of available add ins
         addInsList = AddInsServices.RetrieveAddInsData();
         base.OnInitialized();
     }
@@ -128,11 +128,21 @@
         // Calculate the total price, including the prices of selected add-ins
         decimal totalPrice = CalculateTotalPrice(item) + selectedAddIns.Sum(addIn => decimal.Parse(addIn.Price));
 
+        if (item.Quantity >= 10)
+        {
+            int addquantity = item.Quantity / 10;
+
+            // Provide coffees by increasing the quantity
+            item.Quantity += addquantity;
+        }
+
         // Create an order and set its properties
         Order order = new Order
             {
                 OrderName = $"{item.Brand} - {item.ProductName}",
+                Quantity= item.Quantity,
                 TotalPrice = totalPrice,
+                IsPayed= false,
                 AddIns = selectedAddIns
             };
 

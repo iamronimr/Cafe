@@ -24,6 +24,7 @@ namespace Cafe.Data.Services
         //This method Injects the data Into the Json File Manually by creating the multiple objects and Passing it to the list only if the data inside the file is empty.
         public static void InjectSampleAddInsData()
         {
+
             // Gets the file path where hobby data will be stored from HobbiesFilePath method
             // in FormUtils class in Utils Folder and stores it in the variable filePath.
             string filePath = FormUtils.AddInsFilePath();
@@ -50,6 +51,7 @@ namespace Cafe.Data.Services
         // Retrieves hobby data from the JSON file.
         public static List<AddIns> RetrieveAddInsData()
         {
+            Console.WriteLine("retrive");
             // Gets the file path where hobby data is stored from HobbiesFilePath method
             // in FormUtils class in Utils Folder and stores it in the variable filePath.
             string filePath = FormUtils.AddInsFilePath();

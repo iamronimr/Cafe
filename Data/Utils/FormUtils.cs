@@ -89,5 +89,29 @@ namespace Cafe.Data.Utils
                 return message;
             }
         }
+
+        public static string CustomerFilePath()   // This method is used for customer data.
+        {
+            // Similar implementation as ApplicationFilePath.
+            string directoryPathCreated = ApplicationDirectoryPath();
+            string filePath = Path.Combine(directoryPathCreated, "Customer.json");
+            try
+            {
+                if (!File.Exists(filePath))
+                {
+                    File.Create(filePath).Close();
+                    return filePath;
+                }
+                else
+                {
+                    return filePath;
+                }
+            }
+            catch (Exception ex)
+            {
+                string message = ex.Message;
+                return message;
+            }
+        }
     }
 }

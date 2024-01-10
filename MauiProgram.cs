@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Cafe.Data.Services;
+using Microsoft.Extensions.Logging;
 namespace Cafe;
 
 public static class MauiProgram
@@ -15,6 +16,8 @@ public static class MauiProgram
 
 		builder.Services.AddMauiBlazorWebView();
 		builder.Services.AddScoped<AuthenticationService>();
+		builder.Services.AddScoped<OrderService>();
+		builder.Services.AddScoped<CustomerService>();
 
 #if DEBUG
         builder.Services.AddBlazorWebViewDeveloperTools();

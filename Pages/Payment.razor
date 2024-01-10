@@ -26,17 +26,73 @@
     [Parameter] // Parameter to capture the hobby Id from the route above /EditHobby/{Id:guid}
     public Guid Id { get; set; }
 
+    [Inject]
+    public OrderService OrderService { get; set; }
+
+    [Inject]
+    public CustomerService CustomerService { get; set; }
+
     Payments payment = new Payments();
     // HandleSubmit method is called on form submission
     public void HandleSubmit()
     {
+        Customer customer = CustomerService.GetCustomerByContact(payment.Contact);
+
+        // If customer doesn't exist, create one
+        if (customer == null)
+        {
+            // Create a new customer and set its properties
+            customer = new Customer
+                {
+                    Contact = payment.Contact,
+                    FullName = payment.CustomerName,
+                    IsMember = false,
+                };
+
+            // Save the new customer using the CustomerService
+            CustomerService.SaveFormDataInJson(customer);
+        }
+        else
+        {
+            // Check membership status
+            if (customer.IsMember)
+            {
+                // Calculate ActualPrice before applying discount
+                decimal totalPrice = OrderService.GetTotalPriceById(Id);
+                payment.TotalPrice = totalPrice;
+
+                // Apply 10% discount for members
+                payment.Discount = payment.TotalPrice * (decimal)0.1;
+                payment.TotalPrice = payment.TotalPrice - payment.Discount;
+            }
+            else
+            {
+                // Calculate ActualPrice without discount for non-members
+                decimal totalPrice = OrderService.GetTotalPriceById(Id);
+                payment.TotalPrice = totalPrice;
+
+                payment.Discount = 0;
+            }
+        }
         payment.OrderId = Id;
 
 
         // Save the order details using the OrderService (replace with your actual service)
         PaymentService.SaveFormDataInJson(payment);
 
+        // Update the order status to IsPayed = true
+        Order orderToUpdate = OrderService.GetOrderById(Id);
+        if (orderToUpdate != null)
+        {
+            orderToUpdate.IsPayed = true;
+
+            // Save the updated order details using the OrderService (replace with your actual service)
+            OrderService.UpdateFormDataInJson(orderToUpdate);
+        }
+
+
         // Display a success alert or perform other actions as needed
         App.Current.MainPage.DisplayAlert("Success", "Payment Saved Successfully", "Ok");
+        NavManager.NavigateTo("/Payments");
     }
 }

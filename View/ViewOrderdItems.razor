@@ -5,6 +5,7 @@
         <tr>
             <th>Order Id</th>
             <th>Order Name</th>
+            <th>Quantity</th>
             <th>Price</th>
             <th>Action</th>
         </tr>
@@ -17,11 +18,19 @@
                 <!-- Display add ins ID, Name and Price -->
                 <td>@orderedData.Id</td>
                 <td>@orderedData.OrderName</td>
+                <td>@orderedData.Quantity</td>
                 <td>@orderedData.TotalPrice</td>
-                <td>
-                    <!-- Button to navigate to the edit add ins page with the specific hobby ID -->
-                    <button type="submit" @onclick="@(()=>MakePayment(orderedData.Id))" class="btn btn-primary">Pay</button>
-                </td>
+                @if (!@orderedData.IsPayed)
+                {
+                    <td>
+                        <button type="submit" @onclick="@(()=>MakePayment(orderedData.Id))" class="btn btn-primary">Pay</button>
+
+                    </td>
+                }
+                else
+                {
+                    <td>Paid</td>
+                }
             </tr>
         }
     </tbody>
